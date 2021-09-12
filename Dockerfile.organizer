@@ -1,0 +1,22 @@
+# syntax=docker/dockerfile:1
+
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env-backend
+WORKDIR /app
+
+# Copy csproj and restore as distinct layers
+COPY ./organize/AlgorithmConfigDbClient/AlgorithmConfigDbClient.csproj ./AlgorithmConfigDbClient/AlgorithmConfigDbClient.csproj
+COPY ./organize/Entities/Entities.csproj ./Entities/Entities.csproj
+COPY ./organize/Organizer/Organizer.csproj ./Organizer/Organizer.csproj
+RUN dotnet restore ./Organizer/Organizer.csproj
+
+# Copy everything else and build
+COPY ./organize .
+RUN cd ./Organizer && dotnet publish -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/runtime:5.0-alpine-amd64
+WORKDIR /app
+RUN addgroup -S prodgroup && adduser -S prod -G prodgroup
+USER prod
+COPY --from=build-env-backend /app/Organizer/out .
+ENTRYPOINT ["dotnet", "Organizer.dll"]
