@@ -21,7 +21,7 @@ class Payload(object):
 
 def on_message(body):
     job = Payload(body)
-    logging.info(f"Worker: {id}, incoming job: {job.Id}, algorithm: {job.Algorithm}, start: {job.Start}, end: {job.End}")
+    logging.info(f"Worker: {id}, incoming job: {job.Id}, algorithm: {job.Algorithm}, start: {job.Start}, end: {job.End}, tags: {job.Tags}")
     if job.Algorithm == "Test-algo":
         logging.info(f"Worker: {id}, Test-algo done")
         return

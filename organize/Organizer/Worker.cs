@@ -75,13 +75,14 @@ namespace Organizer
             {
                 if(jobStart >= config.LastRun.AddMinutes(config.RunIntervalMinutes))
                 {
-                    foreach (var tag in config.Tags)
+                    foreach (var tags in config.Tags)
                     {
                         var job = new Job(
                             Guid.NewGuid().ToString(),
                             config.Algorithm,
                             jobStart,
-                            jobStart.AddDays(-config.DataPeriodeDays)
+                            jobStart.AddDays(-config.DataPeriodeDays),
+                            tags
                         );
                         _logger.LogInformation($"Job: {job}");
                         _queue?.PublishJob(job);

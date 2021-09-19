@@ -4,7 +4,7 @@ db.AlgorithmConfig.insertOne({
   RunIntervalMinutes: 1,
   DataPeriodeDays: 1,
   Customer: "TEST kunde",
-  Tags: ["Tag1", "Tag2", "Tag3"],
+  Tags: [["Tag1"], ["Tag2", "Tag3"]],
   LastRun: ISODate("2000-01-01T00:00:00.000Z"),
 });
 
@@ -14,7 +14,7 @@ db.AlgorithmConfig.insertOne({
   RunIntervalMinutes: 2,
   DataPeriodeDays: 2,
   Customer: "TEST kunde",
-  Tags: ["Tag1", "Tag2", "Tag3"],
+  Tags: [["Tag1"], ["Tag2", "Tag3"]],
   LastRun: ISODate("2000-01-01T00:00:00.000Z"),
 });
 
@@ -24,6 +24,6 @@ db.AlgorithmConfig.insertOne({
   RunIntervalMinutes: 3,
   DataPeriodeDays: 3,
   Customer: "TEST kunde",
-  Tags: ["Tag1", "Tag2", "Tag3"],
+  Tags: [["Tag1"], ["Tag2", "Tag3"]],
   LastRun: ISODate("2000-01-01T00:00:00.000Z"),
 });

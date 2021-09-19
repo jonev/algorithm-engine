@@ -10,10 +10,10 @@ namespace Entities
         public int RunIntervalMinutes { get; set; }
         public int DataPeriodeDays { get; set; }
         public string Customer { get; set; }
-        public List<string> Tags { get; set; }
+        public IList<IList<string>> Tags { get; set; }
         public DateTime LastRun { get; set; }
 
-        public AlgorithmConfig(string id, string algorithm, int runIntervalMinutes, int dataPeriodeDays, string customer, List<string> tags, DateTime lastRun)
+        public AlgorithmConfig(string id, string algorithm, int runIntervalMinutes, int dataPeriodeDays, string customer, IList<IList<string>>  tags, DateTime lastRun)
         {
             Id = id;
             Algorithm = algorithm;
