@@ -21,6 +21,7 @@ namespace AlgorithmConfigDbClient
         public AlgorithmConfigsService(ILogger<AlgorithmConfigsService> logger, AlgorithmConfigsServiceSettings settings)
         {
             _logger = logger;
+            _logger.LogInformation($"Initializing, database: {settings.DatabaseName}, user: {settings.Username}");
             _settings = settings;
             var credential = MongoCredential.CreateCredential(
                 settings.DatabaseName,

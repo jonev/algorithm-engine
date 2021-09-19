@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+Dockerfile*
+**/node_modules/
+**/build/
+organize/Organizer/appsettings.Development.json
+organize/Organizer/appsettings.Production.json
+organize/Organizer/appsettings.json

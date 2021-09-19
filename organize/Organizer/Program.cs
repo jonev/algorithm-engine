@@ -6,6 +6,8 @@ using AlgorithmConfigDbClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Organizer.Services;
+using Organizer.Settings;
 
 namespace Organizer
 {
@@ -23,9 +25,12 @@ namespace Organizer
                     IConfiguration configuration = hostContext.Configuration;
 
                     var algorithmConfigsServiceSettings = configuration.GetSection("AlgorithmConfigsServiceSettings").Get<AlgorithmConfigsServiceSettings>();
-
                     services.AddSingleton(algorithmConfigsServiceSettings);
+                    var rabbitMQServiceSettings = configuration.GetSection("RabbitMQSettings").Get<RabbitMQSettings>();
+                    services.AddSingleton(rabbitMQServiceSettings);
+
                     services.AddSingleton<AlgorithmConfigsService>();
+                    services.AddSingleton<QueueService>();
                     services.AddHostedService<Worker>();
                 });
     }

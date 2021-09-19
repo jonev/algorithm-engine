@@ -14,7 +14,7 @@ namespace AlgorithmConfigDbClient.Entities
         public int RunIntervalMinutes { get; set; }
         public int DataPeriodeDays { get; set; }
         public string Customer { get; set; }
-        public List<string> Tags { get; set; }
+        public List<string> Tags { get; set; } // TODO denne må være en liste med en liste, slik at hver algoritme kan ha flere tag, og denne kan inneholde flere jobber på samme algoritme
         public DateTime LastRun { get; set; }
 
         public AlgorithmConfigEntity(string id, string algorithm, int runIntervalMinutes, int dataPeriodeDays, string customer, List<string> tags, DateTime lastRun)

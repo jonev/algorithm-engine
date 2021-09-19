@@ -8,6 +8,7 @@ namespace Organizer.Entities
         public string Algorithm { get; set; }
         public DateTime Start  { get; set; }
         public DateTime End  { get; set; }
+        // TODO denne må sende med taggene
 
         public Job(string id, string algorithm, DateTime start, DateTime end)
         {
