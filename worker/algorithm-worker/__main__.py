@@ -21,9 +21,18 @@ class Payload(object):
 
 def on_message(body):
     job = Payload(body)
-    logging.info(f"Worker: {id}, incoming job: {job.Id}, algorithm: {job.Algorithm}, start: {job.Start}, end: {job.End}, tags: {job.Tags}")
+    logging.info(f"Worker: {id}, incoming job: {job.Id}, customer: {job.Customer} algorithm: {job.Algorithm}, start: {job.Start}, end: {job.End}, tags: {job.Tags}")
     if job.Algorithm == "Test-algo":
         logging.info(f"Worker: {id}, Test-algo done")
+        return
+    
+    if job.Algorithm == "rnn":
+        logging.info(f"Worker: {id}, RNN")
+        # Koble til DB
+        # Hent data
+        # Gjør prediction
+        # Avgjør om det er en alarm
+        # Skriv rapport om det er alarm
         return
     
     logging.error(f"Algorithm type not supported: {job.Algorithm}")
