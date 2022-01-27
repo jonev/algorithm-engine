@@ -19,5 +19,9 @@ RUN pip install -r /requirements.txt \
 ENV DEBIAN_FRONTEND=dialog
 
 COPY ./worker/algorithm-worker ./algorithm-worker
+COPY ./worker/fetch_polygon ./fetch_polygon
+COPY ./worker/reporting ./reporting
+COPY ./worker/rnn ./rnn
+COPY ./worker/timeseries ./timeseries
 
 CMD ["python", "-m", "algorithm-worker"]

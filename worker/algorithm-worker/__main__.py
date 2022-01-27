@@ -53,6 +53,7 @@ def on_message(body):
             assert influx_token
             assert influx_org
             assert influx_bucket
+            logging.info(f"Fetch-polygon.io db info: {influx_host}, {influx_org}, {influx_bucket}")
             fp = FetchPolygon(api_root, api_key)
             db = DbWriter(
                 influx_host,
