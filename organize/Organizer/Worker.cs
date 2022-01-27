@@ -19,7 +19,7 @@ namespace Organizer
         private readonly QueueService _queue;
         private CrontabSchedule _schedule;
 
-        private  string Schedule => "0 */1 * * * *"; //Runs every 1 minute
+        private string Schedule => "0 */1 * * * *"; //Runs every 1 minute
 
         public Worker(ILogger<Worker> logger, AlgorithmConfigsService config, QueueService queue)
         {
@@ -27,7 +27,7 @@ namespace Organizer
             _logger.LogInformation($"Initializing, worker...");
             _config = config;
             _queue = queue;
-            _schedule = CrontabSchedule.Parse(Schedule,new CrontabSchedule.ParseOptions { IncludingSeconds = true });
+            _schedule = CrontabSchedule.Parse(Schedule, new CrontabSchedule.ParseOptions { IncludingSeconds = true });
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -39,9 +39,10 @@ namespace Organizer
                 var now = DateTime.UtcNow;
                 if (now > nextrun)
                 {
-                    #pragma warning disable 4014
-                    Task.Factory.StartNew(async () => await Organize(nextrun))
-                    .ContinueWith(t => {
+#pragma warning disable 4014
+                    Task.Factory.StartNew(async () => await Organize(nextrun)) // Runs every 1 minute
+                    .ContinueWith(t =>
+                    {
                         switch (t.Status)
                         {
                             case TaskStatus.Created:
@@ -58,9 +59,9 @@ namespace Organizer
                             default:
                                 break;
                         }
-                        
+
                     });
-                    #pragma warning restore 4014
+#pragma warning restore 4014
                     nextrun = _schedule.GetNextOccurrence(DateTime.UtcNow);
                 }
                 await Task.Delay(5000, stoppingToken); //5 seconds delay
@@ -73,7 +74,7 @@ namespace Organizer
             _logger.LogInformation($"--- Checking if any job should be created: {jobStart}, configs count: {configs.Count} ---");
             foreach (var config in configs)
             {
-                if(jobStart >= config.LastRun.AddMinutes(config.RunIntervalMinutes))
+                if (jobStart >= config.LastRun.AddMinutes(config.RunIntervalMinutes))
                 {
                     foreach (var tags in config.Tags)
                     {
@@ -82,7 +83,8 @@ namespace Organizer
                             config.Algorithm,
                             jobStart,
                             jobStart.AddDays(-config.DataPeriodeDays),
-                            tags
+                            tags,
+                            config.Customer
                         );
                         _logger.LogInformation($"Job: {job}");
                         _queue?.PublishJob(job);
