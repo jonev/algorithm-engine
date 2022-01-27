@@ -7,6 +7,7 @@
 appsettings.*
 **/build/
 **/wwwroot/
+.env
 /backup/*
 # User-specific files
 *.rsuser
