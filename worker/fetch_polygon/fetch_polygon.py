@@ -24,10 +24,13 @@ class FetchPolygon:
         params = {'adjusted': "true", 'sort': 'asc', 'limit': '5000', 'apiKey': self.api_key}
         connection.request('GET', endpoint)
         response = connection.getresponse()
-        result = json.loads(response.read().decode(), object_hook=lambda d: SimpleNamespace(**d))
-        # logging.info(result)
-        connection.close()
-        return result
+        if response.status == 200:
+            result = json.loads(response.read().decode(), object_hook=lambda d: SimpleNamespace(**d))
+            connection.close()
+            return result
+        else:
+            logging.error(f"Failed to fetch data, status: {response.status}: {response.msg}")
+            return None
 
         
 

@@ -65,31 +65,34 @@ def on_message(body):
             today = date.today()
             yesterday = today - timedelta(days=1)
             for tag in job.Tags:
-                data = fp.fetch_yesterday_data(tag[0], yesterday)
-                # data = fp.fetch_yesterday_data("X:BTCUSD", yesterday)
-                # Skriv data til databasen
+                data = fp.fetch_yesterday_data(tag, yesterday)
+                if data is None:
+                    logging.error(f"Failed to fetch data from polygon.io, for: {tag}")
+                    return
+
                 for price in data.results:
                     db.writePointRaw(
                         measurement="crypto_price",
-                        tag=data.ticker, 
+                        tag=data.ticker.replace(":", "_"), 
                         location="close_price", 
                         timestamp=price.t,
                         unit="USD",
                         value=float(price.c))
                     db.writePointRaw(
                         measurement="crypto_price",
-                        tag=data.ticker, 
+                        tag=data.ticker.replace(":", "_"), 
                         location="highest_price", 
                         timestamp=price.t,
                         unit="USD",
                         value=float(price.h))
                     db.writePointRaw(
                         measurement="crypto_price",
-                        tag=data.ticker, 
+                        tag=data.ticker.replace(":", "_"), 
                         location="lowest_price", 
                         timestamp=price.t,
                         unit="USD",
                         value=float(price.l))
+                logging.info(f"Fetched and save data from polygon.io, for: {tag}")
             logging.info(f"Fetch-polygon ran with success, on worker: {id}")
             return
         

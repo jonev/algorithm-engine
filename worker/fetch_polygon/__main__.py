@@ -33,6 +33,8 @@ if __name__ == "__main__": # Manual test run
     today = datetime.date.today()
     yesterday = today - datetime.timedelta(days=1)
     data = fp.fetch_yesterday_data("X:BTCUSD", yesterday)
+    if data is None:
+        logging.error("Failed to fetch data")
 
     db = DbWriter(
         influx_host,
