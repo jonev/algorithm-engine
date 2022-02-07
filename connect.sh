@@ -5,7 +5,3 @@ echo "Connecting: $containername"
 networkname=$(docker network ls --format "{{.Name}}" | grep '^algorithm-engine_default')
 echo "to: $networkname"
 docker network connect $networkname $containername
-echo "Connecting: $containername"
-networkname=$(docker network ls --format "{{.Name}}" | grep '^leakage-dashboard_default')
-echo "to: $networkname"
-docker network connect $networkname $containername

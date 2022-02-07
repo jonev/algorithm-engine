@@ -23,5 +23,6 @@ COPY ./worker/fetch_polygon ./fetch_polygon
 COPY ./worker/reporting ./reporting
 COPY ./worker/rnn ./rnn
 COPY ./worker/timeseries ./timeseries
+COPY ./worker/utils ./utils
 
 CMD ["python", "-m", "algorithm-worker"]

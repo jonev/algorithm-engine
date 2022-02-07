@@ -6,5 +6,9 @@ db.createUser({
       role: "readWrite",
       db: "AlgorithmConfigs",
     },
+    {
+      role: "readWrite",
+      db: "Reports",
+    },
   ],
 });

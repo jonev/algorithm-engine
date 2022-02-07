@@ -18,10 +18,8 @@ class FetchPolygon:
         # https://polygon.io/docs/crypto/getting-started
         d = date.strftime('%Y-%m-%d')
         endpoint = f'/v2/aggs/ticker/{ticker}/range/15/minute/{d}/{d}?adjusted=true&sort=asc&limit=5000&apiKey='+self.api_key
-        url = self.api_root + endpoint
         # logging.info(f'Fetch data: {url}')
         connection = http.client.HTTPSConnection(self.api_root)
-        params = {'adjusted': "true", 'sort': 'asc', 'limit': '5000', 'apiKey': self.api_key}
         connection.request('GET', endpoint)
         response = connection.getresponse()
         if response.status == 200:

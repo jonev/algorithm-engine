@@ -1,8 +1,10 @@
 from datetime import datetime, date, timedelta
 import logging
 import uuid
-import json
 import os
+
+from fetch_polygon.__main__ import run_polygon
+from utils.utils import Payload
 from .queue_service import QueueService
 from dotenv import load_dotenv
 from fetch_polygon.fetch_polygon import FetchPolygon
@@ -15,12 +17,10 @@ logging.basicConfig(
     level=logging.INFO,
     datefmt="%Y-%m-%d %H:%M:%S",
 )
-id = uuid.uuid4()
+id = uuid.uuid4() # Id of the worker instance running this code. To be able to differentiate the different workers.
 
-class Payload(object):
-     def __init__(self, j):
-         self.__dict__ = json.loads(j)
 
+# This is trigged by an incoming job
 def on_message(body):
     try:
         job = Payload(body)
@@ -40,60 +40,11 @@ def on_message(body):
 
         if job.Algorithm == "Fetch-polygon.io":
             logging.info(f"Worker: {id}, Fetch-polygon.io, tags: {job.Tags}")
-            # Setup
-            api_root = os.getenv("POLYGON_API_ROOT")
-            api_key = os.getenv("POLYGON_API_KEY")
             influx_host = os.getenv("INFLUXDB_HOST")
             influx_token = os.getenv("INFLUXDB_TOKEN")
             influx_org = os.getenv("INFLUXDB_ORG")
             influx_bucket = os.getenv("INFLUXDB_BUCKET")
-            assert api_root
-            assert api_key
-            assert influx_host
-            assert influx_token
-            assert influx_org
-            assert influx_bucket
-            logging.info(f"Fetch-polygon.io db info: {influx_host}, {influx_org}, {influx_bucket}")
-            fp = FetchPolygon(api_root, api_key)
-            db = DbWriter(
-                influx_host,
-                influx_token,
-                influx_org,
-                influx_bucket,
-            )
-            # Hent data
-            today = date.today()
-            yesterday = today - timedelta(days=1)
-            for tag in job.Tags:
-                data = fp.fetch_yesterday_data(tag, yesterday)
-                if data is None:
-                    logging.error(f"Failed to fetch data from polygon.io, for: {tag}")
-                    return
-
-                for price in data.results:
-                    db.writePointRaw(
-                        measurement="crypto_price",
-                        tag=data.ticker.replace(":", "_"), 
-                        location="close_price", 
-                        timestamp=price.t,
-                        unit="USD",
-                        value=float(price.c))
-                    db.writePointRaw(
-                        measurement="crypto_price",
-                        tag=data.ticker.replace(":", "_"), 
-                        location="highest_price", 
-                        timestamp=price.t,
-                        unit="USD",
-                        value=float(price.h))
-                    db.writePointRaw(
-                        measurement="crypto_price",
-                        tag=data.ticker.replace(":", "_"), 
-                        location="lowest_price", 
-                        timestamp=price.t,
-                        unit="USD",
-                        value=float(price.l))
-                logging.info(f"Fetched and save data from polygon.io, for: {tag}")
-            logging.info(f"Fetch-polygon ran with success, on worker: {id}")
+            run_polygon(id, job, influx_host, influx_token, influx_org, influx_bucket)
             return
         
         logging.error(f"Algorithm type not supported: {job.Algorithm}")
@@ -102,7 +53,7 @@ def on_message(body):
 
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": # This is running in production
     url = os.getenv("RABBITMQ_URL")
     assert url
     logging.info(f"Worker starting {datetime.now()}, with id: {id}, rabbitmq-url: {url.split('@')[1]}")

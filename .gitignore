@@ -10,6 +10,7 @@ appsettings.*
 **/.env
 .env
 /backup/*
+influx/
 # User-specific files
 *.rsuser
 *.suo

@@ -9,6 +9,9 @@ services:
     volumes:
       - ./mocks/dotnetUser.js:/docker-entrypoint-initdb.d/dotnetUser.js
       - ./mocks/configs.js:/docker-entrypoint-initdb.d/configs.js
+      - ./mocks/testUsers.js:/docker-entrypoint-initdb.d/testUsers.js
+      - ./mocks/reports.js:/docker-entrypoint-initdb.d/reports.js
+      - ./mocks/customers.js:/docker-entrypoint-initdb.d/customers.js
     ports:
       - 27017:27017
 
@@ -30,3 +33,19 @@ services:
     volumes:
       - ./rabbit/definitions.json:/opt/definitions.json:ro
       - ./rabbit/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+
+  influxdb:
+    image: influxdb:2.1.1
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./influx:/var/lib/influxdb
+      - ./mocks/tsdata.csv:/testdata/tsdata.csv
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: user
+      DOCKER_INFLUXDB_INIT_PASSWORD: password
+      DOCKER_INFLUXDB_INIT_ORG: dev
+      DOCKER_INFLUXDB_INIT_BUCKET: test_bucket
+      DOCKER_INFLUXDB_INIT_RETENTION: 1w
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: my-super-secret-auth-token
